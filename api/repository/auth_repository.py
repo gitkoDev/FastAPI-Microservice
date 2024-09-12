@@ -5,8 +5,8 @@ from sqlalchemy.future import select
 from datetime import datetime, timedelta
 from typing import Annotated
 
-from models.user_models import UserModel
-from schemas.user_schemas import (
+from api.models.user_models import UserModel
+from api.schemas.user_schemas import (
     CreateUserInput,
     bcrypt_context,
     SECRET_KEY,
@@ -14,11 +14,14 @@ from schemas.user_schemas import (
     oauth2_bearer,
 )
 from config.database import SessionLocal
+from helpers.helpers import NotFoundError
 
 
 class AuthRepository:
     @classmethod
     async def create_user(cls, data: CreateUserInput) -> int:
+        if await cls.is_existing_user(user=data):
+            raise NotFoundError
         async with SessionLocal() as session:
             user = UserModel(
                 name=data.name, password_hash=bcrypt_context.hash(data.password)
@@ -39,6 +42,16 @@ class AuthRepository:
             if not bcrypt_context.verify(password, user.password_hash):
                 return False
             return user
+
+    @classmethod
+    async def is_existing_user(cls, user: UserModel) -> bool:
+        async with SessionLocal() as session:
+            query = select(UserModel).where(UserModel.name == user.name)
+            result = await session.execute(query)
+            user = result.scalars().one_or_none()
+            if not user:
+                return False
+            return True
 
     @classmethod
     def create_access_token(cls, name: str, id: int, ttl: timedelta):

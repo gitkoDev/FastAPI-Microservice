@@ -1,14 +1,11 @@
 run:
-	uvicorn main:app --reload
+	docker compose up --build
 	
-review:
-	alembic revision --autogenerate -m "Create User model"
-
 upgrade:
 	alembic upgrade head
 
 downgrade:
 	alembic downgrade base
 
-generate_migrations: upgrade
+generate_migrations:
 	alembic revision --autogenerate -m "Create User and Note models"

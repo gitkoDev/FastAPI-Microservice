@@ -1,8 +1,8 @@
-from sqlalchemy import String, Integer, Text, DateTime, ForeignKey, func
-from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase, relationship
+from sqlalchemy import Integer, Text, DateTime, ForeignKey, func
+from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 
 from datetime import datetime
-from models.user_models import UserModel
+from api.models.user_models import UserModel
 
 
 class Base(DeclarativeBase):
