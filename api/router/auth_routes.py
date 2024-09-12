@@ -17,7 +17,7 @@ router = APIRouter(
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
-async def create_user(data: Annotated[CreateUserInput, Depends()]) -> dict:
+async def create_user(data: CreateUserInput) -> dict:
     try:
         user_id = await AuthRepository.create_user(data)
     except NotFoundError:

@@ -18,7 +18,7 @@ router = APIRouter(
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def add_note(
     user: Annotated[dict, Depends(AuthRepository.parse_access_token)],
-    data: Annotated[NoteInput, Depends()],
+    data: NoteInput,
 ) -> dict:
     if not user:
         raise HTTPException(
@@ -62,7 +62,7 @@ async def get_note(
 async def update_note(
     user: Annotated[dict, Depends(AuthRepository.parse_access_token)],
     note_id: int,
-    data: Annotated[NoteInput, Depends()],
+    data: NoteInput,
 ) -> NoteOutput:
     if not user:
         raise HTTPException(
